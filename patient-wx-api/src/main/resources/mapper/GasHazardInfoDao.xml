@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.patient.wx.api.db.dao.GasHazardInfoDao">
+
+    <select id="searchById" parameterType="Integer" resultType="HashMap">
+        SELECT 
+            h.id,
+            h.hazard_type AS hazardType,
+            h.hazard_level AS hazardLevel,
+            h.hazard_source AS hazardSource,
+            h.user_id AS userId,
+            u.user_name AS userName,
+            h.area_code AS areaCode,
+            CONCAT(
+                IFNULL(l1.area_name, ''),
+                IF(l1.area_name IS NOT NULL AND l2.area_name IS NOT NULL, '/', ''),
+                IFNULL(l2.area_name, ''),
+                IF(l2.area_name IS NOT NULL AND l3.area_name IS NOT NULL, '/', ''),
+                IFNULL(l3.area_name, '')
+            ) AS areaNameDisplay,
+            h.address,
+            CAST(h.longitude AS CHAR) AS longitude,
+            CAST(h.latitude AS CHAR) AS latitude,
+            h.hazard_desc AS hazardDesc,
+            DATE_FORMAT(h.rectify_start_date, '%Y-%m-%d') AS rectifyStartDate,
+            DATE_FORMAT(h.rectify_end_date, '%Y-%m-%d') AS rectifyEndDate,
+            h.submit_user_name AS submitUserName,
+            DATE_FORMAT(h.submit_time, '%Y-%m-%d %H:%i:%s') AS submitTime,
+            h.assignee_id AS assigneeId,
+            w.name AS assigneeName,
+            h.is_self_rectify AS isSelfRectify,
+            h.hazard_photo AS hazardPhoto,
+            h.rectify_status AS rectifyStatus,
+            h.rectify_photo AS rectifyPhoto,
+            h.rectify_video AS rectifyVideo,
+            DATE_FORMAT(h.rectify_time, '%Y-%m-%d %H:%i:%s') AS rectifyTime
+        FROM gas_hazard_info h
+        LEFT JOIN gas_user u ON h.user_id = u.id
+        LEFT JOIN gas_worker w ON h.assignee_id = w.id
+        LEFT JOIN tbl_area_node l3 ON 
+            CASE 
+                WHEN h.area_code LIKE '%/%/%' THEN SUBSTRING_INDEX(h.area_code, '/', -1)
+                ELSE NULL
+            END = l3.code
+        LEFT JOIN tbl_area_node l2 ON 
+            CASE 
+                WHEN h.area_code LIKE '%/%/%' THEN SUBSTRING_INDEX(SUBSTRING_INDEX(h.area_code, '/', 2), '/', -1)
+                WHEN h.area_code LIKE '%/%' THEN SUBSTRING_INDEX(h.area_code, '/', -1)
+                ELSE NULL
+            END = l2.code
+        LEFT JOIN tbl_area_node l1 ON 
+            CASE 
+                WHEN h.area_code LIKE '%/%' THEN SUBSTRING_INDEX(h.area_code, '/', 1)
+                ELSE NULL
+            END = l1.code
+        WHERE h.id = #{id}
+    </select>
+
+    <update id="update" parameterType="Map">
+        UPDATE gas_hazard_info
+        SET
+            rectify_status = #{rectifyStatus},
+            rectify_photo = #{rectifyPhoto},
+            rectify_video = #{rectifyVideo},
+            rectify_time = #{rectifyTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="searchByAssigneeId" parameterType="Map" resultType="HashMap">
+        SELECT 
+            h.id,
+            h.hazard_type AS hazardType,
+            h.hazard_level AS hazardLevel,
+            h.hazard_source AS hazardSource,
+            h.address,
+            CAST(h.longitude AS CHAR) AS longitude,
+            CAST(h.latitude AS CHAR) AS latitude,
+            h.hazard_desc AS hazardDesc,
+            DATE_FORMAT(h.rectify_start_date, '%Y-%m-%d') AS rectifyStartDate,
+            DATE_FORMAT(h.rectify_end_date, '%Y-%m-%d') AS rectifyEndDate,
+            h.submit_user_name AS submitUserName,
+            DATE_FORMAT(h.submit_time, '%Y-%m-%d %H:%i:%s') AS submitTime,
+            w.name AS assigneeName,
+            h.hazard_photo AS hazardPhoto,
+            h.rectify_status AS rectifyStatus,
+            h.rectify_photo AS rectifyPhoto,
+            h.rectify_video AS rectifyVideo,
+            DATE_FORMAT(h.rectify_time, '%Y-%m-%d %H:%i:%s') AS rectifyTime
+        FROM gas_hazard_info h
+        LEFT JOIN gas_worker w ON h.assignee_id = w.id
+        WHERE h.assignee_id = #{assigneeId}
+        <if test="rectifyStatus != null">
+            AND h.rectify_status = #{rectifyStatus}
+        </if>
+        ORDER BY h.submit_time DESC
+        LIMIT #{start}, #{length}
+    </select>
+
+    <select id="searchCountByAssigneeId" parameterType="Map" resultType="long">
+        SELECT COUNT(*)
+        FROM gas_hazard_info h
+        WHERE h.assignee_id = #{assigneeId}
+        <if test="rectifyStatus != null">
+            AND h.rectify_status = #{rectifyStatus}
+        </if>
+    </select>
+</mapper>

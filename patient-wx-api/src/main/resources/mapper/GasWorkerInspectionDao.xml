@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.patient.wx.api.db.dao.GasWorkerInspectionDao">
+    
+    <insert id="insert" parameterType="com.example.gas.patient.wx.api.db.pojo.GasWorkerInspectionEntity">
+        INSERT INTO gas_worker_inspection 
+            (worker_plan_id, worker_id, inspect_date, has_danger, inspect_desc, inspect_photo, inspect_result)
+        VALUES 
+            (#{workerPlanId}, #{workerId}, #{inspectDate}, #{hasDanger}, #{inspectDesc}, #{inspectPhoto}, #{inspectResult})
+    </insert>
+
+    <update id="update" parameterType="com.example.gas.patient.wx.api.db.pojo.GasWorkerInspectionEntity">
+        UPDATE gas_worker_inspection SET
+            has_danger = #{hasDanger},
+            inspect_desc = #{inspectDesc},
+            inspect_photo = #{inspectPhoto},
+            inspect_result = #{inspectResult},
+            inspect_date = #{inspectDate}
+        WHERE id = #{id}
+    </update>
+
+    <select id="searchByWorkerPlanId" parameterType="Integer" resultType="HashMap">
+        SELECT 
+            i.id AS id,
+            i.worker_plan_id AS workerPlanId,
+            i.worker_id AS workerId,
+            DATE_FORMAT(i.inspect_date, '%Y-%m-%d %H:%i:%s') AS inspectDate,
+            i.has_danger AS hasDanger,
+            i.inspect_desc AS inspectDesc,
+            i.inspect_photo AS inspectPhoto,
+            i.inspect_result AS inspectResult,
+            u.area_code AS areaCode,
+            u.address AS userAddress,
+            u.building_info AS buildingInfo,
+            CONCAT(
+                IFNULL((SELECT area_name FROM tbl_area_node WHERE code = SUBSTRING_INDEX(u.area_code, '/', -1)), ''),
+                IFNULL(u.address, ''),
+                IFNULL(u.building_info, '')
+            ) AS fullAddress,
+            (SELECT area_name FROM tbl_area_node WHERE code = SUBSTRING_INDEX(u.area_code, '/', -1)) AS areaName
+        FROM gas_worker_plan p
+        LEFT JOIN gas_user u ON p.user_id = u.id
+        LEFT JOIN gas_worker_inspection i ON i.worker_plan_id = p.id
+        WHERE p.id = #{workerPlanId}
+        LIMIT 1
+    </select>
+
+    <select id="searchById" parameterType="Integer" resultType="HashMap">
+        SELECT 
+            i.id AS id,
+            i.worker_plan_id AS workerPlanId,
+            i.worker_id AS workerId,
+            DATE_FORMAT(i.inspect_date, '%Y-%m-%d %H:%i:%s') AS inspectDate,
+            i.has_danger AS hasDanger,
+            i.inspect_desc AS inspectDesc,
+            i.inspect_photo AS inspectPhoto,
+            i.inspect_result AS inspectResult
+        FROM gas_worker_inspection i
+        WHERE i.id = #{id}
+    </select>
+</mapper>

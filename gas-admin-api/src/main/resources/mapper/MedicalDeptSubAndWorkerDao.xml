@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.api.db.dao.MedicalDeptSubAndWorkerDao">
+    <insert id="insert" parameterType="com.example.gas.api.db.pojo.MedicalDeptSubAndWorkerEntity">
+        INSERT INTO MEDICAL_DEPT_SUB_AND_WORKER(dept_sub_id, worker_id)
+        VALUES (#{deptSubId}, #{workerId})
+    </insert>
+
+    <update id="updateWorkerSubDept" parameterType="Map">
+        UPDATE MEDICAL_DEPT_SUB_AND_WORKER
+        SET dept_sub_id = #{subId}
+        WHERE worker_id = #{workerId}
+    </update>
+</mapper>

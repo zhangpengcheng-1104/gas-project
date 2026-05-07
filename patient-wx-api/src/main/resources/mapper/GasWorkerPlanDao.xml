@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.patient.wx.api.db.dao.GasWorkerPlanDao">
+    <select id="searchCanWorkInDateRange" parameterType="Map" resultType="String">
+        SELECT DISTINCT date
+        FROM gas_worker_plan
+        WHERE worker_id = #{workerId}
+          AND date BETWEEN #{startDate} AND #{endDate}
+    </select>
+    
+    <select id="searchWorkerPlanInDay" parameterType="Map" resultType="HashMap">
+        SELECT d.user_no as userNo,
+               d.user_name as userName,
+               d.address as address,
+               d.building_info as buildingInfo,
+               d.contact_phone as contactPhone,
+               p.date as date,
+               p.id as id,
+               p.description as description
+        FROM gas_worker_plan p
+            JOIN gas_user d ON p.user_id = d.id
+        WHERE p.worker_id = #{workerId}
+          AND p.date = #{date}
+    </select>
+</mapper>

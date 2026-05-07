@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.api.db.dao.GasWorkerInspectionReportDao">
+    
+    <select id="searchInspectionReportList" parameterType="Map" resultType="HashMap">
+        SELECT
+            p.id AS planId,
+            p.date AS planDate,
+            p.description AS planDesc,
+            w.id AS workerId,
+            w.name AS workerName,
+            w.tel AS workerTel,
+            ds.name AS deptSubName,
+            d.name AS deptName,
+            gu.user_name AS userName,
+            gu.contact_phone AS userPhone,
+            gu.address AS userAddress,
+            gu.building_info AS buildingInfo,
+            i.id AS inspectionId,
+            i.inspect_date AS inspectDate,
+            i.has_danger AS hasDanger,
+            i.inspect_desc AS inspectDesc,
+            i.inspect_photo AS inspectPhoto,
+            i.inspect_result AS inspectResult
+        FROM gas_worker_plan p
+        LEFT JOIN gas_worker w ON p.worker_id = w.id
+        LEFT JOIN medical_dept_sub ds ON p.dept_sub_id = ds.id
+        LEFT JOIN medical_dept d ON ds.dept_id = d.id
+        LEFT JOIN gas_user gu ON p.user_id = gu.id
+        LEFT JOIN gas_worker_inspection i ON p.id = i.worker_plan_id
+        WHERE 1=1
+        <if test="workerName != null and workerName != ''">
+            AND w.name LIKE CONCAT("%", #{workerName}, "%")
+        </if>
+        <if test="deptId != null">
+            AND d.id = #{deptId}
+        </if>
+        <if test="startDate != null">
+            AND p.date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND p.date &lt;= #{endDate}
+        </if>
+        <if test="hasDanger != null">
+            AND i.has_danger = #{hasDanger}
+        </if>
+        <if test="inspectResult != null and inspectResult != ''">
+            AND i.inspect_result = #{inspectResult}
+        </if>
+        ORDER BY p.date DESC, p.id DESC
+    </select>
+
+    <select id="searchInspectionReportDetail" parameterType="Integer" resultType="HashMap">
+        SELECT
+            p.id AS planId,
+            p.date AS planDate,
+            p.description AS planDesc,
+            w.id AS workerId,
+            w.name AS workerName,
+            w.tel AS workerTel,
+            ds.name AS deptSubName,
+            d.name AS deptName,
+            gu.user_name AS userName,
+            gu.contact_phone AS userPhone,
+            gu.address AS userAddress,
+            gu.building_info AS buildingInfo,
+            i.id AS inspectionId,
+            i.inspect_date AS inspectDate,
+            i.has_danger AS hasDanger,
+            i.inspect_desc AS inspectDesc,
+            i.inspect_photo AS inspectPhoto,
+            i.inspect_result AS inspectResult
+        FROM gas_worker_plan p
+        LEFT JOIN gas_worker w ON p.worker_id = w.id
+        LEFT JOIN medical_dept_sub ds ON p.dept_sub_id = ds.id
+        LEFT JOIN medical_dept d ON ds.dept_id = d.id
+        LEFT JOIN gas_user gu ON p.user_id = gu.id
+        LEFT JOIN gas_worker_inspection i ON p.id = i.worker_plan_id
+        WHERE p.id = #{planId}
+    </select>
+
+</mapper>

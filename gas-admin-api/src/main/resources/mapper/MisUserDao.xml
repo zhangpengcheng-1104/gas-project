@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.api.db.dao.MisUserDao">
+    <select id="login" parameterType="Map" resultType="Integer">
+        SELECT id
+        FROM MIS_USER
+        WHERE username = #{username}
+          AND password = #{password}
+    </select>
+
+    <select id="searchUserPermissions" parameterType="int" resultType="String">
+        SELECT p.permission_code AS permission
+        FROM MIS_USER u
+                 JOIN MIS_USER_ROLE ur ON u.id = ur.user_id
+                 JOIN MIS_ROLE_PERMISSION rp ON rp.role_id = ur.role_id
+                 JOIN MIS_PERMISSION p ON rp.permission_id = p.id
+        WHERE u.id = #{userId}
+    </select>
+
+    <select id="searchUserList" parameterType="Map" resultType="com.example.gas.api.db.pojo.MisUserEntity">
+        SELECT id, username, password, name, sex, tel, email, dept_id as deptId, job, ref_id as refId, status, create_time as createTime FROM MIS_USER
+        WHERE 1=1
+        <if test="username != null and username != ''">
+            AND username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="deptId != null">
+            AND dept_id = #{deptId}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY id ASC
+        <if test="start != null and length != null">
+            LIMIT #{start}, #{length}
+        </if>
+    </select>
+
+    <select id="searchUserCount" parameterType="Map" resultType="Long">
+        SELECT COUNT(*) FROM MIS_USER
+        WHERE 1=1
+        <if test="username != null and username != ''">
+            AND username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="deptId != null">
+            AND dept_id = #{deptId}
+        </if>
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <select id="searchUserById" parameterType="Integer" resultType="com.example.gas.api.db.pojo.MisUserEntity">
+        SELECT id, username, password, name, sex, tel, email, dept_id as deptId, job, ref_id as refId, status, create_time as createTime FROM MIS_USER WHERE id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.gas.api.db.pojo.MisUserEntity">
+        INSERT INTO MIS_USER (id, username, password, name, sex, tel, email, dept_id, job, ref_id, status, create_time)
+        VALUES (#{id}, #{username}, #{password}, #{name}, #{sex}, #{tel}, #{email}, #{deptId}, #{job}, #{refId}, #{status}, NOW())
+    </insert>
+
+    <update id="updateUser" parameterType="com.example.gas.api.db.pojo.MisUserEntity">
+        UPDATE MIS_USER
+        SET
+        <if test="password != null and password != ''">
+            password = #{password},
+        </if>
+        name = #{name},
+        sex = #{sex},
+        tel = #{tel},
+        email = #{email},
+        dept_id = #{deptId},
+        job = #{job},
+        ref_id = #{refId},
+        status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="Integer">
+        DELETE FROM MIS_USER WHERE id = #{id}
+    </delete>
+
+    <delete id="batchDeleteUsers" parameterType="java.util.List">
+        DELETE FROM MIS_USER WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="searchUserRoles" parameterType="Integer" resultType="Integer">
+        SELECT role_id FROM MIS_USER_ROLE WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insertUserRole" parameterType="Map">
+        INSERT INTO MIS_USER_ROLE (user_id, role_id)
+        VALUES (#{userId}, #{roleId})
+    </insert>
+
+    <delete id="deleteUserRole" parameterType="Integer">
+        DELETE FROM MIS_USER_ROLE WHERE user_id = #{userId}
+    </delete>
+
+    <delete id="batchDeleteUserRoles" parameterType="java.util.List">
+        DELETE FROM MIS_USER_ROLE WHERE user_id IN
+        <foreach collection="list" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+    <select id="searchByPage" parameterType="Map" resultType="HashMap">
+        SELECT DISTINCT u.id,
+        u.name,
+        u.sex,
+        u.tel,
+        u.email,
+        d.name AS dept,
+        u.job,
+        u.status,
+        role.roles,
+        u.username
+        FROM MIS_USER u
+        LEFT JOIN MIS_DEPT d ON u.dept_id = d.id
+        LEFT JOIN (select ur.user_id,GROUP_CONCAT(r.role_name separator "，" ) roles
+        from MIS_USER_ROLE ur,MIS_ROLE r
+        where ur.role_id = r.id
+        group by ur.user_id) role on u.id = role.user_id
+        WHERE 1 = 1
+        <if test="name!=null">
+        AND u.name LIKE CONCAT("%",#{name},"%")
+        </if>
+        <if test="sex!=null">
+        AND u.sex = #{sex}
+        </if>
+        <if test="deptId!=null">
+        AND u.dept_id = #{deptId}
+        </if>
+        ORDER BY u.id
+        LIMIT #{start}, #{length}
+    </select>
+
+    <select id="searchCount" parameterType="Map" resultType="long">
+        SELECT COUNT(*)
+        FROM MIS_USER u
+        LEFT JOIN MIS_DEPT d ON u.dept_id = d.id
+        LEFT JOIN (select ur.user_id,GROUP_CONCAT(r.role_name separator "，" ) roles
+        from MIS_USER_ROLE ur,MIS_ROLE r
+        where ur.role_id = r.id
+        group by ur.user_id) role on u.id = role.user_id
+        WHERE 1 = 1
+        <if test="name!=null">
+        AND u.name LIKE CONCAT("%",#{name},"%")
+        </if>
+        <if test="sex!=null">
+        AND u.sex = #{sex}
+        </if>
+        <if test="deptId!=null">
+        AND u.dept_id = #{deptId}
+        </if>
+    </select>
+
+    <select id="getMaxId" resultType="Integer">
+        SELECT MAX(id) FROM MIS_USER
+    </select>
+</mapper>

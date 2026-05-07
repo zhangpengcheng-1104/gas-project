@@ -1,0 +1,225 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [
+		{
+			"path": "pages/index/index"
+		}, {
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/checkup/checkup",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/message_list/message_list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/registration_list/registration_list",
+			"style": {
+				"navigationBarTitleText": "我的预约",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"subPackages": [{
+			"root": "user",
+			"pages": [{
+				"path": "fill_user_info/fill_user_info",
+				"style": {
+					"navigationBarTitleText": "创建信息卡",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "gas_worker_info/gas_worker_info",
+				"style": {
+					"navigationBarTitleText": "巡检员信息",
+					"enablePullDownRefresh": false
+				}
+
+			},
+			{
+				"path": "face_camera/face_camera",
+				"style": {
+					"navigationBarTitleText": "录入面部信息",
+					"enablePullDownRefresh": false
+				}
+
+			}]
+		},
+		{
+			"root": "registration",
+			"pages": [{
+					"path": "notice/notice",
+					"style": {
+						"navigationBarTitleText": "开户须知",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "medical_dept_list/medical_dept_list",
+					"style": {
+						"navigationBarTitleText": "科室列表",
+						"enablePullDownRefresh": false,
+						"disableScroll": true
+					}
+
+				}, {
+					"path": "dept_sub_plan/dept_sub_plan",
+					"style": {
+						"navigationBarTitleText": "在线计划",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "doctor_schedule/doctor_schedule",
+					"style": {
+						"navigationBarTitleText": "巡检信息",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+					"path": "registration_info/registration_info",
+					"style": {
+						"navigationBarTitleText": "巡检记录",
+						"enablePullDownRefresh": false
+					}
+
+				}, {
+				"path": "prescription/prescription",
+				"style": {
+					"navigationBarTitleText": "电子资料",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#4aaccf",
+					"navigationBarTextStyle": "white"
+				}
+			},
+			{
+				"path": "worker_schedule/worker_plan",
+				"style": {
+					"navigationBarTitleText": "巡检计划",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path": "worker_inspection/worker_inspection",
+				"style": {
+					"navigationBarTitleText": "燃气入户巡检",
+					"enablePullDownRefresh": false
+				}
+			}
+		]
+		},
+		{
+			"root": "video_diagnose",
+			"pages": [{
+				"path": "doctor_list/doctor_list",
+				"style": {
+					"navigationBarTitleText": "在线咨询",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "video_diagnose/video_diagnose",
+				"style": {
+					"navigationBarTitleText": "视频问诊",
+					"enablePullDownRefresh": false,
+					"usingComponents": {
+						"trtc-room": "/wxcomponents/trtc-room/trtc-room"
+					}
+				}
+			}, {
+				"path": "order_list/order_list",
+				"style": {
+					"navigationBarTitleText": "视频问诊订单列表",
+					"enablePullDownRefresh": false
+
+				}
+			}, {
+				"path": "prepare_diagnose/prepare_diagnose",
+				"style": {
+					"navigationBarTitleText": "提交问诊资料",
+					"enablePullDownRefresh": false
+				}
+
+			}]
+		},
+		{
+			"root": "hazard_rectify",
+			"pages": [{
+				"path": "hazard_rectify_list/hazard_rectify_list",
+				"style": {
+					"navigationBarTitleText": "隐患整改",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "hazard_rectify_detail/hazard_rectify_detail",
+				"style": {
+					"navigationBarTitleText": "隐患详情",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "hazard_rectify_submit/hazard_rectify_submit",
+				"style": {
+					"navigationBarTitleText": "提交整改",
+					"enablePullDownRefresh": false
+				}
+			}]
+		}
+	],
+	"tabBar": {
+		"color": "#444",
+		"selectedColor": "#1296db",
+		"list": [{
+				"text": "首页",
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tab_bar/icon-1.png",
+				"selectedIconPath": "static/tab_bar/icon-2.png"
+			},
+			
+			{
+				"text": "消息中心",
+				"pagePath": "pages/message_list/message_list",
+				"iconPath": "static/tab_bar/icon-5.png",
+				"selectedIconPath": "static/tab_bar/icon-6.png"
+			},
+			
+			{
+				"text": "个人中心",
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/tab_bar/icon-9.png",
+				"selectedIconPath": "static/tab_bar/icon-10.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "重庆正大能科",
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff"
+	},
+	"uniIdRouter": {},
+	"condition": {
+		"current": 0,
+		"list": [{
+			"name": "",
+			"path": "",
+			"query": ""
+		}]
+	}
+
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.patient.wx.api.db.dao.GasWorkerDao">
+    <select id="searchByTel" parameterType="String" resultType="com.example.gas.patient.wx.api.db.pojo.GasWorkerEntity">
+        SELECT id, name, pid, uuid, sex, photo, birthday, school, degree, tel, address, email, job, remark, description, hiredate, tag, recommended, status, create_time
+        FROM gas_worker
+        WHERE tel = #{tel} AND status = 1
+    </select>
+    
+    <select id="searchById" parameterType="Integer" resultType="com.example.gas.patient.wx.api.db.pojo.GasWorkerEntity">
+        SELECT id, name, pid, uuid, sex, photo, birthday, school, degree, tel, address, email, job, remark, description, hiredate, tag, recommended, status, create_time
+        FROM gas_worker
+        WHERE id = #{id} AND status = 1
+    </select>
+</mapper>

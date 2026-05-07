@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.gas.patient.wx.api.db.dao.UserDao">
+    <insert id="insert" parameterType="com.example.gas.patient.wx.api.db.pojo.UserEntity">
+        INSERT INTO PATIENT_USER(
+            open_id, nickname, photo, sex, status, create_time
+        )
+        VALUES(
+            #{openId}, #{nickname}, #{photo}, #{sex}, #{status}, NOW()
+        )
+    </insert>
+
+    <select id="searchAlreadyRegistered" parameterType="String" resultType="Integer">
+        SELECT id
+        FROM PATIENT_USER
+        WHERE open_id = #{openId}
+    </select>
+
+    <select id="searchById" parameterType="int" resultType="com.example.gas.patient.wx.api.db.pojo.UserEntity">
+        SELECT id, open_id, nickname, photo, sex, status, create_time
+        FROM PATIENT_USER
+        WHERE id = #{id}
+    </select>
+</mapper>
