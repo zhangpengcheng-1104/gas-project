@@ -49,3 +49,6 @@ unpackage/
 
 # MCP配置文件（包含敏感信息）
 .mcp.json
+
+# 文档文件（仅本地使用）
+*.docx
